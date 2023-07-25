@@ -31,8 +31,8 @@ function imagefromString(pictureString)
 end
 
 local function group(picture)
-  local width = picture[1]
-  local height = picture[2]
+  local height = picture[1]
+  local width = picture[2]
   local data = {}
 
   local x, y = 1, 1 
