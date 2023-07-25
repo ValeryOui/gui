@@ -37,7 +37,7 @@ local function group(picture)
 
   local x, y = 1, 1 
 	for i = 3, #picture, 4 do
-		if !data[x] then data[x] = {} end
+		if not data[x] then data[x] = {} end
     table.insert(data[x], {background = picture[i], foreground = palette[picture[i + 1]], alpha = picture[i + 2], char = picture[i + 3]})
 
     if #data[x] >= width then x = x + 1 end
