@@ -627,7 +627,9 @@ function buyListCallback(guiID, id, rowID, text)
   if itemListData[buyListChoose].image then
     local picture = imagefromString(itemListData[buyListChoose].image)
 
-    PrintTable(picture)
+    print(picture[1], picture[2])
+    print()
+    print(serialization.serialize(picture))
   end
 end
 
