@@ -11,8 +11,7 @@ local serialization = require("serialization")
 local pim = component.pim
 
 
-local image = {}
-function image.fromString(pictureString)
+function imagefromString(pictureString)
 	local picture = {
 		tonumber("0x" .. unicode.sub(pictureString, 1, 2)),
 		tonumber("0x" .. unicode.sub(pictureString, 3, 4)),
@@ -626,7 +625,7 @@ function buyListCallback(guiID, id, rowID, text)
   gui.setText(guiID, buyInfo, "К оплате - " .. result .. "$             ")
 
   if itemListData[buyListChoose].image then
-    local picture = image.fromString(itemListData[buyListChoose].image)
+    local picture = imagefromString(itemListData[buyListChoose].image)
 
     PrintTable(picture)
   end
