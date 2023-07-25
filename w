@@ -9,8 +9,24 @@ local io = require("io")
 local unicode = require("unicode")
 local serialization = require("serialization")
 local pim = component.pim
-local color = require("color")
-local image = require("image")
+
+
+local image = {}
+function image.fromString(pictureString)
+	local picture = {
+		tonumber("0x" .. unicode.sub(pictureString, 1, 2)),
+		tonumber("0x" .. unicode.sub(pictureString, 3, 4)),
+	}
+
+	for i = 5, unicode.len(pictureString), 7 do
+		table.insert(picture, tonumber("0x" .. unicode.sub(pictureString, i, i + 1)))
+		table.insert(picture, tonumber("0x" .. unicode.sub(pictureString, i + 2, i + 3)))
+		table.insert(picture, tonumber("0x" .. unicode.sub(pictureString, i + 4, i + 5)) / 255)
+		table.insert(picture, unicode.sub(pictureString, i + 6, i + 6))
+	end
+
+	return picture
+end
 
 
 local checkPimPlayer, db, logs, infoButton
