@@ -62,7 +62,7 @@ function drawImage(pictureString, offsetx, offsety)
   local data = group.data
 
   for x, array in ipairs(data) do
-    for y, info in ipairs(darrayata) do
+    for y, info in ipairs(array) do
       drawPixel(offsetx, offsety, x, y, info.char, info.background, info.foreground, info.alpha)
     end
   end
