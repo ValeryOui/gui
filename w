@@ -9,10 +9,29 @@ local io = require("io")
 local unicode = require("unicode")
 local serialization = require("serialization")
 local pim = component.pim
+local itemConfig = require("itemconfig")
 
 
 ---image converter
-local palette = {0x000000, 0x000040, 0x000080, 0x0000BF, 0x0000FF, 0x002400, 0x002440, 0x002480, 0x0024BF, 0x0024FF, 0x004900, 0x004940, 0x004980, 0x0049BF, 0x0049FF, 0x006D00, 0x006D40, 0x006D80, 0x006DBF, 0x006DFF, 0x009200, 0x009240, 0x009280, 0x0092BF, 0x0092FF, 0x00B600, 0x00B640, 0x00B680, 0x00B6BF, 0x00B6FF, 0x00DB00, 0x00DB40, 0x00DB80, 0x00DBBF, 0x00DBFF, 0x00FF00, 0x00FF40, 0x00FF80, 0x00FFBF, 0x00FFFF, 0x0F0F0F, 0x1E1E1E, 0x2D2D2D, 0x330000, 0x330040, 0x330080, 0x3300BF, 0x3300FF, 0x332400, 0x332440, 0x332480, 0x3324BF, 0x3324FF, 0x334900, 0x334940, 0x334980, 0x3349BF, 0x3349FF, 0x336D00, 0x336D40, 0x336D80, 0x336DBF, 0x336DFF, 0x339200, 0x339240, 0x339280, 0x3392BF, 0x3392FF, 0x33B600, 0x33B640, 0x33B680, 0x33B6BF, 0x33B6FF, 0x33DB00, 0x33DB40, 0x33DB80, 0x33DBBF, 0x33DBFF, 0x33FF00, 0x33FF40, 0x33FF80, 0x33FFBF, 0x33FFFF, 0x3C3C3C, 0x4B4B4B, 0x5A5A5A, 0x660000, 0x660040, 0x660080, 0x6600BF, 0x6600FF, 0x662400, 0x662440, 0x662480, 0x6624BF, 0x6624FF, 0x664900, 0x664940, 0x664980, 0x6649BF, 0x6649FF, 0x666D00, 0x666D40, 0x666D80, 0x666DBF, 0x666DFF, 0x669200, 0x669240, 0x669280, 0x6692BF, 0x6692FF, 0x66B600, 0x66B640, 0x66B680, 0x66B6BF, 0x66B6FF, 0x66DB00, 0x66DB40, 0x66DB80, 0x66DBBF, 0x66DBFF, 0x66FF00, 0x66FF40, 0x66FF80, 0x66FFBF, 0x66FFFF, 0x696969, 0x787878, 0x878787, 0x969696, 0x990000, 0x990040, 0x990080, 0x9900BF, 0x9900FF, 0x992400, 0x992440, 0x992480, 0x9924BF, 0x9924FF, 0x994900, 0x994940, 0x994980, 0x9949BF, 0x9949FF, 0x996D00, 0x996D40, 0x996D80, 0x996DBF, 0x996DFF, 0x999200, 0x999240, 0x999280, 0x9992BF, 0x9992FF, 0x99B600, 0x99B640, 0x99B680, 0x99B6BF, 0x99B6FF, 0x99DB00, 0x99DB40, 0x99DB80, 0x99DBBF, 0x99DBFF, 0x99FF00, 0x99FF40, 0x99FF80, 0x99FFBF, 0x99FFFF, 0xA5A5A5, 0xB4B4B4, 0xC3C3C3, 0xCC0000, 0xCC0040, 0xCC0080, 0xCC00BF, 0xCC00FF, 0xCC2400, 0xCC2440, 0xCC2480, 0xCC24BF, 0xCC24FF, 0xCC4900, 0xCC4940, 0xCC4980, 0xCC49BF, 0xCC49FF, 0xCC6D00, 0xCC6D40, 0xCC6D80, 0xCC6DBF, 0xCC6DFF, 0xCC9200, 0xCC9240, 0xCC9280, 0xCC92BF, 0xCC92FF, 0xCCB600, 0xCCB640, 0xCCB680, 0xCCB6BF, 0xCCB6FF, 0xCCDB00, 0xCCDB40, 0xCCDB80, 0xCCDBBF, 0xCCDBFF, 0xCCFF00, 0xCCFF40, 0xCCFF80, 0xCCFFBF, 0xCCFFFF, 0xD2D2D2, 0xE1E1E1, 0xF0F0F0, 0xFF0000, 0xFF0040, 0xFF0080, 0xFF00BF, 0xFF00FF, 0xFF2400, 0xFF2440, 0xFF2480, 0xFF24BF, 0xFF24FF, 0xFF4900, 0xFF4940, 0xFF4980, 0xFF49BF, 0xFF49FF, 0xFF6D00, 0xFF6D40, 0xFF6D80, 0xFF6DBF, 0xFF6DFF, 0xFF9200, 0xFF9240, 0xFF9280, 0xFF92BF, 0xFF92FF, 0xFFB600, 0xFFB640, 0xFFB680, 0xFFB6BF, 0xFFB6FF, 0xFFDB00, 0xFFDB40, 0xFFDB80, 0xFFDBBF, 0xFFDBFF, 0xFFFF00, 0xFFFF40, 0xFFFF80, 0xFFFFBF, 0xFFFFFF}
+local palette = {0x000000, 0x000040, 0x000080, 0x0000BF, 0x0000FF, 0x002400, 0x002440, 0x002480, 0x0024BF, 0x0024FF, 0x004900, 0x004940, 0x004980, 
+0x0049BF, 0x0049FF, 0x006D00, 0x006D40, 0x006D80, 0x006DBF, 0x006DFF, 0x009200, 0x009240, 0x009280, 0x0092BF, 0x0092FF, 0x00B600, 0x00B640, 0x00B680, 
+0x00B6BF, 
+0x00B6FF, 0x00DB00, 0x00DB40, 0x00DB80, 0x00DBBF, 0x00DBFF, 0x00FF00, 0x00FF40, 0x00FF80, 0x00FFBF, 0x00FFFF, 0x0F0F0F, 0x1E1E1E, 0x2D2D2D, 0x330000, 
+0x330040, 0x330080, 0x3300BF, 0x3300FF, 0x332400, 0x332440, 0x332480, 0x3324BF, 0x3324FF, 0x334900, 0x334940, 0x334980, 0x3349BF, 0x3349FF, 0x336D00, 
+0x336D40, 0x336D80, 0x336DBF, 0x336DFF, 0x339200, 0x339240, 0x339280, 0x3392BF, 0x3392FF, 0x33B600, 0x33B640, 0x33B680, 0x33B6BF, 0x33B6FF, 0x33DB00, 
+0x33DB40, 0x33DB80, 0x33DBBF, 0x33DBFF, 0x33FF00, 0x33FF40, 0x33FF80, 0x33FFBF, 0x33FFFF, 0x3C3C3C, 0x4B4B4B, 0x5A5A5A, 0x660000, 0x660040, 0x660080, 
+0x6600BF, 0x6600FF, 0x662400, 0x662440, 0x662480, 0x6624BF, 0x6624FF, 0x664900, 0x664940, 0x664980, 0x6649BF, 0x6649FF, 0x666D00, 0x666D40, 0x666D80, 
+0x666DBF, 0x666DFF, 0x669200, 0x669240, 0x669280, 0x6692BF, 0x6692FF, 0x66B600, 0x66B640, 0x66B680, 0x66B6BF, 0x66B6FF, 0x66DB00, 0x66DB40, 0x66DB80, 
+0x66DBBF, 0x66DBFF, 0x66FF00, 0x66FF40, 0x66FF80, 0x66FFBF, 0x66FFFF, 0x696969, 0x787878, 0x878787, 0x969696, 0x990000, 0x990040, 0x990080, 0x9900BF, 
+0x9900FF, 0x992400, 0x992440, 0x992480, 0x9924BF, 0x9924FF, 0x994900, 0x994940, 0x994980, 0x9949BF, 0x9949FF, 0x996D00, 0x996D40, 0x996D80, 0x996DBF, 
+0x996DFF, 0x999200, 0x999240, 0x999280, 0x9992BF, 0x9992FF, 0x99B600, 0x99B640, 0x99B680, 0x99B6BF, 0x99B6FF, 0x99DB00, 0x99DB40, 0x99DB80, 0x99DBBF, 
+0x99DBFF, 0x99FF00, 0x99FF40, 0x99FF80, 0x99FFBF, 0x99FFFF, 0xA5A5A5, 0xB4B4B4, 0xC3C3C3, 0xCC0000, 0xCC0040, 0xCC0080, 0xCC00BF, 0xCC00FF, 0xCC2400, 
+0xCC2440, 0xCC2480, 0xCC24BF, 0xCC24FF, 0xCC4900, 0xCC4940, 0xCC4980, 0xCC49BF, 0xCC49FF, 0xCC6D00, 0xCC6D40, 0xCC6D80, 0xCC6DBF, 0xCC6DFF, 0xCC9200, 
+0xCC9240, 0xCC9280, 0xCC92BF, 0xCC92FF, 0xCCB600, 0xCCB640, 0xCCB680, 0xCCB6BF, 0xCCB6FF, 0xCCDB00, 0xCCDB40, 0xCCDB80, 0xCCDBBF, 0xCCDBFF, 0xCCFF00, 
+0xCCFF40, 0xCCFF80, 0xCCFFBF, 0xCCFFFF, 0xD2D2D2, 0xE1E1E1, 0xF0F0F0, 0xFF0000, 0xFF0040, 0xFF0080, 0xFF00BF, 0xFF00FF, 0xFF2400, 0xFF2440, 0xFF2480, 
+0xFF24BF, 0xFF24FF, 0xFF4900, 0xFF4940, 0xFF4980, 0xFF49BF, 0xFF49FF, 0xFF6D00, 0xFF6D40, 0xFF6D80, 0xFF6DBF, 0xFF6DFF, 0xFF9200, 0xFF9240, 0xFF9280, 
+0xFF92BF, 0xFF92FF, 0xFFB600, 0xFFB640, 0xFFB680, 0xFFB6BF, 0xFFB6FF, 0xFFDB00, 0xFFDB40, 0xFFDB80, 0xFFDBBF, 0xFFDBFF, 0xFFFF00, 0xFFFF40, 0xFFFF80, 
+0xFFFFBF, 0xFFFFFF}
 
 function imagefromString(pictureString)
 	local picture = {
@@ -31,14 +50,14 @@ function imagefromString(pictureString)
 end
 
 local function group(picture)
-  local height = picture[1]
-  local width = picture[2]
+  local width = picture[1]
+  local height = picture[2]
   local data = {}
-
+  
   local x, y = 1, 1 
 	for i = 3, #picture, 4 do
 		if not data[x] then data[x] = {} end
-    table.insert(data[x], {background = picture[i], foreground = palette[picture[i + 1]], alpha = picture[i + 2], char = picture[i + 3]})
+    table.insert(data[x], {background = palette[picture[i] + 1], foreground = palette[picture[i + 1] + 1], alpha = picture[i + 2], char = picture[i + 3]})
 
     if #data[x] >= width then x = x + 1 end
 	end
@@ -61,9 +80,9 @@ function drawImage(pictureString, offsetx, offsety)
   local height = group.height
   local data = group.data
 
-  for x, array in ipairs(data) do
-    for y, info in ipairs(array) do
-      drawPixel(offsetx, offsety, x, y, info.char, info.background, info.foreground, info.alpha)
+  for y, array in ipairs(data) do
+    for x, info in ipairs(array) do
+      drawPixel(offsety, offsetx, x, y, info.char, info.background, info.foreground, info.alpha)
     end
   end
 end
@@ -140,201 +159,6 @@ PrintTable(db)
 
 
 ------------------- Config --------------------------------
-
-
-local itemConfig = {
-	--Майнкрафт
-	{uniqueID = "minecraft:cactus", id = "81", name = "Кактус", price = 0.03, image = "1008828100⣤828100⣤828100⣤568000⣤567E00⣤567E00⣤297E00⣤291000⣤291000⣤291000⣤373700⠀373700⠀373700⠀363600⠀363600⠀363600⠀818100⠀818100⠀818100⠀7E8000⡇7E7E00⠀7E7E00⠀107E00⡇101000⠀101000⠀101000⡇373700⠀373700⠀373700⠀363600⠀363600⠀363600⠀828100⠛828100⠛828100⠛568000⠛567E00⠛567E00⠛567E00⢻101000⠀101000⠀101000⡇373700⠀373700⠀373700⠀363600⠀363600⠀363600⠀828200⠀828200⠀828200⠀568200⡇565600⠀565600⠀561000⢸101000⠀101000⠀101000⡇373700⠀373700⠀373700⠀363600⠀363600⠀363600⠀828200⠀828200⠀828200⠀568200⡇565600⠀565600⠀561000⢸101000⠀101000⠀101000⡇373700⠀373700⠀373700⠀363600⠀363600⠀363600⠀828200⠀828200⠀828200⠀568200⡇565600⠀565600⠀561000⢸101000⠀101000⠀101000⡇373700⠀373700⠀373700⠀363600⠀363600⠀363600⠀608200⢿828200⠀828200⠀568200⡇565600⠀565600⠀561000⢸101000⠀101000⠀101000⡇373700⠀373700⠀373700⠀363600⠀363600⠀363600⠀608200⢸828200⠀828200⠀568200⡇565600⠀565600⠀561000⢸101000⠀101000⠀101000⡇373700⠀373700⠀373700⠀363600⠀363600⠀363600⠀"},
-  {uniqueID = "minecraft:dye", id = "351:3", name = "Какао-бобы", price = 0.03},
-	{uniqueID = "minecraft:reeds", id = "338", name = "Сахарный тростник", price = 0.03},
-	{uniqueID = "minecraft:nether_wart", id = "372", name = "Адский нарост", price = 0.02},
-	{uniqueID = "minecraft:ender_pearl", id = "368", name = "Жемчуг Эндера", price = 0.5},
-	{uniqueID = "minecraft:bone", id = "352", name = "Кость", price = 0.2},
-	{uniqueID = "minecraft:leather", id = "334", name = "Кожа", price = 0.2},
-	{uniqueID = "minecraft:glowstone_dust", id = "348", name = "Светящаяся пыль", price = 0.1},
-	{uniqueID = "minecraft:nether_star", id = "399", name = "Адская звезда", price = 128.9},
-	{uniqueID = "minecraft:dragon_egg", id = "122", name = "Яйцо дракона", price = 194.22},
-  
-	--Индастриал
-	{uniqueID = "IC2:itemRubber", id = "4099", name = "Резина", price = 0.0016},
-	{uniqueID = "IC2:blockMachine", id = "202:11", name = "Утилизатор", price = 1.48},
-	{uniqueID = "IC2:blockMachine", id = "202:5", name = "Компрессор", price = 1.18},
-	{uniqueID = "IC2:blockMachine", id = "202:13", name = "Индукционная печь", price = 4.18},
-	{uniqueID = "IC2:blockMachine", id = "202:2", name = "Электропечь", price = 0.98},
-	{uniqueID = "IC2:blockMachine2", id = "203:3", name = "Термальная центрифуга", price = 11.32},
-	{uniqueID = "IC2:blockMachine2", id = "203:5", name = "Рудопромывочный механизм", price = 3.84},
-	{uniqueID = "IC2:blockMachine", id = "202:3", name = "Дробитель", price = 1.18},
-	{uniqueID = "IC2:blockElectric", id = "200:2", name = "МФЭХ", price = 35.56},
-	{uniqueID = "IC2:blockElectric", id = "200:1", name = "МФЭ", price = 8.48},
-	{uniqueID = "IC2:blockElectric", id = "200", name = "Энергохранилище", price = 1.02},
-	{uniqueID = "IC2:blockMachine2", id = "203:4", name = "Маталлоформовочный механизм", price = 2.7},
-	{uniqueID = "IC2:blockMachine", id = "202:6", name = "Жидкостниый/Твердотельный наполняющий механизм", price = 1.53},
-	{uniqueID = "IC2:blockMachine", id = "202:4", name = "Экстрактор", price = 1.18},
-	{uniqueID = "IC2:blockMachine2", id = "203:9", name = "Консервирующий механизм", price = 1.66},
-	{uniqueID = "IC2:blockKineticGenerator", id = "192", name = "Кинетический ветрогенератор", price = 2.5},
-	{uniqueID = "IC2:blockGenerator", id = "194:9", name = "Кинетический генератор", price = 3.5},
-	{uniqueID = "IC2:itemwcarbonrotor", id = "4296", name = "Углеволоконный ротор ветрогенератора", price = 16},
-	{uniqueID = "IC2:blockGenerator", id = "194", name = "Генератор", price = 0.98},
-	{uniqueID = "IC2:upgradeModule", id = "4270", name = "Улучшение \"Ускоритель\"", price = 15.94},
-	{uniqueID = "IC2:upgradeModule", id = "4270:2", name = "Улучшение \"Энергохранитель\"", price = 0.77},
-	{uniqueID = "IC2:itemArmorEnergypack", id = "4184", name = "Энергетический ранец", price = 12.09},
-	-- {uniqueID = "", id = "4193:26", name = "Лазуротроновый кристалл", price = 3.95},
-	-- {uniqueID = "", id = "4192:27", name = "Энергетический кристалл", price = 1.89},
-	-- {uniqueID = "", id = "4191:26", name = "Продвинутый аккумулятор", price = 0.61},
-	-- {uniqueID = "", id = "4189", name = "Незаряженный аккумулятор", price = 0.33},
-	{uniqueID = "IC2:blockMachine", id = "202", name = "Основной корпус механизма", price = 0.8},
-	{uniqueID = "IC2:blockMachine", id = "202:12", name = "Продвинутый корпус механизма", price = 2.5},
-	-- {uniqueID = "", id = "4125", name = "Элекстросхема", price = 0.38},
-	-- {uniqueID = "", id = "4126", name = "Продвинутая элекстросхема", price = 0.88},
-	-- {uniqueID = "", id = "4199", name = "Изолированный медный провод", price = 0.03},
-	-- {uniqueID = "IC2:upgradeModule", id = "4270:6", name = "Pulling Upgrade", price = 1.5},
-	{uniqueID = "IC2:upgradeModule", id = "4270:3", name = "Улучшение \"Выталкиватель\"", price = 1.24},
-	{uniqueID = "IC2:upgradeModule", id = "4270:4", name = "Улучшение \"Выталкиватель жидкостей\"", price = 1.28},
-	-- {uniqueID = "", id = "4130", name = "Углепластик", price = 0.4},
-	-- {uniqueID = "", id = "4127", name = "Композит", price = 0.45},
-	-- {uniqueID = "", id = "4111:13", name = "Серная пыль", price = 0.2},
-	-- {uniqueID = "", id = "4199:9", name = "Стекловолоконный провод", price = 0.52},
-	-- {uniqueID = "", id = "4196:26", name = "Продвинутый заряжающий аккумулятор", price = 10},
-	-- {uniqueID = "", id = "4198:26", name = "Заряжающий лазуротроновый кристалл", price = 53.36},
-	-- {uniqueID = "", id = "4197:26", name = "Заряжающий энергетический кристалл", price = 23.88},
-  
-  -- лазуритовый ранец !!!!!!
-	-- {uniqueID = "", id = "4152:25", name = "Электроключ", price = 2.35},
-	-- {uniqueID = "", id = "4811", name = "Гравитул", price = 31.16},
-	-- {uniqueID = "", id = "4812", name = "Улучшенный алмазный бур", price = 46.67},
-	-- {uniqueID = "", id = "4181", name = "Электрический реактивный ранец", price = 13.16},
-	-- {uniqueID = "", id = "4172", name = "Нано-шлем", price = 14.59},
-	-- {uniqueID = "", id = "4806:26", name = "Улучшенный наножилет", price = 67.07},
-	-- {uniqueID = "", id = "4173", name = "Нано-кираса", price = 7.33},
-	-- {uniqueID = "", id = "4174", name = "Нано-поножи", price = 6.93},
-	-- {uniqueID = "", id = "4175", name = "Нано-ботинки", price = 6.13},
-	-- {uniqueID = "", id = "4160", name = "Нано-сабля", price = 6.43},
-	{uniqueID = "IC2:blockMachine2", id = "203:2", name = "Автосадовник", price = 7.16},
-	-- {uniqueID = "", id = "204:7", name = "Сборщик урожая", price = 26.46},
-	-- {uniqueID = "", id = "4217:1", name = "Охлаждающий стержень 60к", price = 7.3},
-	-- {uniqueID = "", id = "4200:9", name = "Капсула хладагента", price = 0.5},
-
-	-- --Реакторы
-	-- {uniqueID = "", id = "4206:1", name = "Топливный стержень (Уран)", price = 1.6},
-	-- {uniqueID = "", id = "4208:1", name = "Счетверённый топливный стержень (Уран)", price = 6.9},
-	-- {uniqueID = "", id = "4219", name = "Теплоёмкая реакторная пластина", price = 1.35},
-	-- {uniqueID = "", id = "4221:1", name = "Теплообменник", price = 1.18},
-	-- {uniqueID = "", id = "4224:1", name = "Продвинутый теплообменник", price = 3.42},
-	-- {uniqueID = "", id = "4227:1", name = "Разогнанный теплоотвод", price = 2.48},
-	-- {uniqueID = "", id = "4229:1", name = "Алмазный теплоотвод", price = 2.96},
-	-- {uniqueID = "", id = "4223:1", name = "Компонентный теплообменник", price = 1.58},
-	-- {uniqueID = "", id = "194:5", name = "Ядерный реактор", price = 36.06},
-	-- {uniqueID = "", id = "195", name = "Реакторная камера", price = 10.2},
-	-- {uniqueID = "", id = "198", name = "Реакторный проводник красного сигнала", price = 0.7},
-	-- {uniqueID = "", id = "181", name = "Укреплённый камень", price = 0.5},
-	-- {uniqueID = "", id = "183", name = "Укреплённое стекло", price = 183},
-
-	-- --Адвансед панельки
-	-- {uniqueID = "", id = "228", name = "Молекулярный преобразователь", price = 40.35},
-	-- {uniqueID = "", id = "194:3", name = "Солнечная панель", price = 1.89},
-	-- {uniqueID = "", id = "741", name = "Солнечная панель 2-го уровня", price = 15.52},
-	-- {uniqueID = "", id = "741:1", name = "Солнечная панель 3-го уровня", price = 125.02},
-	-- {uniqueID = "", id = "741:2", name = "Солнечная панель 4-го уровня", price = 1002.07},
-	-- {uniqueID = "", id = "4305:9", name = "Часть саннариума", price = 1},
-	-- {uniqueID = "", id = "4305", name = "Саннариум", price = 9},
-	-- {uniqueID = "", id = "4305:8", name = "Излучающая армированная пластина", price = 24.8},
-	-- {uniqueID = "", id = "4305:7", name = "Армированная железная пластина", price = 8},
-
-	-- --Нуклиар контроль
-	-- {uniqueID = "", id = "677:7", name = "Стационарный энергосчётчик", price = 2},
-	-- {uniqueID = "", id = "677:9", name = "Продвинутая информационная панель", price = 7},
-	-- {uniqueID = "", id = "4927:1", name = "Улучшение оЦветностьп", price = 1},
-	-- {uniqueID = "", id = "4927", name = "Улучшение оУсиление сигранап", price = 3},
-	-- {uniqueID = "", id = "4919", name = "Набор с дистанционным датчиком", price = 2},
-	-- {uniqueID = "", id = "4921", name = "Набор для счётчика энергии", price = 0.8},
-	-- {uniqueID = "", id = "677", name = "Датчик температуры", price = 1.7},
-
-	-- --Драконик эволюшн
-	-- {uniqueID = "", id = "1701", name = "Наполнитель энергии", price = 58},
-	-- {uniqueID = "", id = "1695", name = "Дракониевый блок", price = 23.94},
-	-- {uniqueID = "", id = "1707", name = "Заряженный драконием обсидиан", price = 26},
-
-	-- --Термал экспеншн
-	-- {uniqueID = "", id = "656", name = "Силовой конвертер", price = 12.3},
-	-- {uniqueID = "", id = "667", name = "Рамка механизма (Основная)", price = 0.9},
-	-- {uniqueID = "", id = "667:1", name = "Рамка механизма (Усиленная)", price = 1.8},
-	-- {uniqueID = "", id = "667:2", name = "Рамка механизма (Укреплённая)", price = 2.62},
-	-- {uniqueID = "", id = "667:3", name = "Рамка механизма (Резонирующая)", price = 6.72},
-	-- {uniqueID = "", id = "657:8", name = "Резонируюций водяной накопитель", price = 9},
-	-- {uniqueID = "", id = "657:11", name = "Резонирующий фитогенный светильник", price = 9},
-	-- {uniqueID = "", id = "657:7", name = "Резонирующий вулканический пресс", price = 9},
-	-- {uniqueID = "", id = "657:5", name = "Резонирующий распределитель жидкостей", price = 9},
-	-- {uniqueID = "", id = "657:3", name = "Резонирующая индукционная плавильня", price = 657:3},
-	-- {uniqueID = "", id = "657:2", name = "Резонирующая лесопилка", price = 9},
-	-- {uniqueID = "", id = "657:1", name = "Резонирующий измельчитель", price = 9},
-	-- {uniqueID = "", id = "657:4", name = "Резонирующий магмовый тигель", price = 9},
-	-- {uniqueID = "", id = "6077:4", name = "Резонируюций фильтр", price = 0.9},
-	-- {uniqueID = "", id = "6077", name = "Фильтр", price = 0.2},
-	-- {uniqueID = "", id = "6078:4", name = "Резонируюций поисковик", price = 0.9},
-	-- {uniqueID = "", id = "6075:4", name = "Резонирующий сервомеханизм", price = 0.9},
-	-- {uniqueID = "", id = "4802:128", name = "Расширение: Вторичная принимающая катушка", price = 0.7},
-	-- {uniqueID = "", id = "4802:129", name = "Расширение: Разогнанный модульный редуктор", price = 1.1},
-	-- {uniqueID = "", id = "4802:130", name = "Расширение: Пространственно-временной унификатор флакса", price = 2},
-	-- {uniqueID = "", id = "4673:76", name = "Слиток эндериума", price = 0.9},
-	-- {uniqueID = "", id = "4673:74", name = "Синаловый слиток", price = 0.13},
-	-- {uniqueID = "", id = "4673:72", name = "Инваровый слиток", price = 0.1},
-	-- {uniqueID = "", id = "4673:75", name = "Ламиумовый слиток", price = 0.2},
-	-- {uniqueID = "", id = "4673:71", name = "Электрумовый слиток", price = 0.1},
-	-- {uniqueID = "", id = "4673:513", name = "Пыль криотеума", price = 0.2},
-	-- {uniqueID = "", id = "4673:512", name = "Пыль пиротеума", price = 0.2},
-	-- {uniqueID = "", id = "4802:312", name = "Расширение: Ускоренная экструзия", price = 0.9},
-	-- {uniqueID = "", id = "4802:313", name = "Расширение: Вулканический катализатор", price = 0.9},
-	-- {uniqueID = "", id = "4802:314", name = "Расширение: Пирокластическое генерирование", price = 0.9},
-	-- {uniqueID = "", id = "4673:68", name = "Никелевый слиток", price = 0.1},
-	-- {uniqueID = "", id = "4673:69", name = "Платиновый слиток", price = 1},
-	-- {uniqueID = "", id = "6336", name = "Флаксовый слиток", price = 0.9},
-	-- {uniqueID = "", id = "4798:5", name = "Резонирующий флаксовый конденсатор", price = 4},
-	-- {uniqueID = "", id = "4673:1028", name = "Basalz Rod", price = 0.4},
-	-- {uniqueID = "", id = "4673:1024", name = "Бурановый стержень", price = 0.5},
-	-- {uniqueID = "", id = "4672:2", name = "Ведро резонирующего эндериума", price = 2.3},
-	-- {uniqueID = "", id = "4672", name = "Ведро дестабилизированного красного камня", price = 0.9},
-	-- {uniqueID = "", id = "4672:4", name = "Ведро ледяного кристеума", price = 2},
-	-- {uniqueID = "", id = "4672:1", name = "Ведро заряженного светящегося камня", price = 0.9},
-	-- {uniqueID = "", id = "4672:8", name = "Ведро тектонического петротеума", price = 1.5},
-	-- {uniqueID = "", id = "4672:3", name = "Ведро пылающего пиротеума", price = 1.2},
-
-	-- --Майнфактори
-	-- {uniqueID = "", id = "833", name = "Сеятель", price = 2.5},
-	-- {uniqueID = "", id = "833:1", name = "Рыболов", price = 2.8},
-	-- {uniqueID = "", id = "833:2", name = "Комбайн", price = 3},
-	-- {uniqueID = "", id = "833:3", name = "Фермер", price = 2.6},
-	-- {uniqueID = "", id = "833:4", name = "Удобритель", price = 2.6},
-	-- {uniqueID = "", id = "833:12", name = "Селекционер", price = 3.2},
-	-- {uniqueID = "", id = "833:13", name = "Молотилка", price = 2.7},
-	-- {uniqueID = "", id = "833:15", name = "Сепаратор", price = 4},
-	-- {uniqueID = "", id = "836:13", name = "Бойня", price = 2.6},
-	-- {uniqueID = "", id = "864:6", name = "Сборщик фруктов", price = 2.8},
-	-- {uniqueID = "", id = "5574:3", name = "Улучшение (Медь)", price = 0.5},
-
-	-- --Дварвен сити
-	-- {uniqueID = "", id = "6382", name = "Вис Материя", price = 3.85},
-	-- {uniqueID = "", id = "6338", name = "Тёмная Материя", price = 2.7},
-	-- {uniqueID = "", id = "6388", name = "Солнечная Материя", price = 3.11},
-	-- {uniqueID = "", id = "6380", name = "Живая Материя", price = 2.6},
-	-- {uniqueID = "", id = "6406", name = "Ледяная Материя", price = 2.6},
-	-- {uniqueID = "", id = "6397", name = "Трижды сжатый камень", price = 10},
-	-- {uniqueID = "", id = "6355", name = "Дважды сжатый адский кирпич", price = 15},
-	-- {uniqueID = "", id = "6776", name = "Печать алхимии", price = 10},
-	-- {uniqueID = "", id = "6687", name = "Печать ДНК", price = 125},
-	-- {uniqueID = "", id = "6791", name = "Печать смерти", price = 62.7},
-	-- {uniqueID = "", id = "6817", name = "Кубическая печать", price = 70},
-	-- {uniqueID = "", id = "6738", name = "Печать обороны", price = 20},
-	-- {uniqueID = "", id = "6777", name = "Механическая печать", price = 28.04},
-	-- {uniqueID = "", id = "6698", name = "Печать света", price = 20},
-	-- {uniqueID = "", id = "6787", name = "Флаксовая печать", price = 60},
-	-- {uniqueID = "", id = "6820", name = "Печать жизни", price = 2.6},
-	-- {uniqueID = "", id = "6825", name = "Модульная печать", price = 16},
-	-- {uniqueID = "", id = "6785", name = "Жидкостная печать", price = 20},
-	-- {uniqueID = "", id = "6748", name = "Печать защиты", price = 35},
-	-- {uniqueID = "", id = "6710", name = "Печать удачи", price = 15},
-	-- {uniqueID = "", id = "6815", name = "Печать безопасности", price = 40},
-	-- {uniqueID = "", id = "6737", name = "Лазерная печать", price = 30},
-}
 
 local depositConfig = {
   ["minecraft:iron_ingot"] = {name = "Железный слиток", id = 265, amount = 1, price = 0.1},
